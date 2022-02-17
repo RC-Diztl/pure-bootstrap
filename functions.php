@@ -253,6 +253,44 @@ add_action('rest_api_init', function () {
     
         return $response;
   }
+
+use Razorpay\Api\Api;
+use Razorpay\Api\Errors;
+
+add_filter('woocommerce_rest_prepare_shop_order_object', 'razor_pay_create_order', 10, 3);
+
+function razor_pay_create_order($response, $post, $request) {
+     $order_data = $response->get_data();
+     $id = $order_data["id"];
+     $order_data["extraId"] = $id;
+     if($order_data['payment_method'] == 'razorpay') {
+       // $order = wc_get_order($id);
+       // $order->calculate_totals();
+	$api = new Api('rzp_test_3wAUWAFe936RfC','Dx5kyk79qfzhjNt500ypq8mP');
+	$data = array(
+		'receipt'         => $id,
+		'amount'          => (int) round($order_data['total'] * 100),
+		'currency'        => $order_data['currency'],
+		'payment_capture' =>  0,
+		'app_offer'       =>  0,
+		'notes'           => array(
+		    "woocommerce_order_number"  => (string) $id,
+		),
+	    );
+	try
+	{
+	    $razorpayOrder = $api->order->create($data);
+	}
+	catch (Exception $e)
+	{
+	    return $e;
+	}  
+	$razorpayOrderId = $razorpayOrder['id'];
+	$order_data['razorpayOrder'] = $razorpayOrderId;
+    }
+     //return $razorpayOrderId;
+    return $response = $order_data;
+}
   
 
 ?>
