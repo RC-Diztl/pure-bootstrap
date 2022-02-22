@@ -291,6 +291,52 @@ function razor_pay_create_order($response, $post, $request) {
      //return $razorpayOrderId;
     return $response = $order_data;
 }
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'bz/v3', 'getCustomFile', array(
+			'methods' => 'GET',
+			'callback' => 'bzaruCustomCssFile'
+		) );
+  } );
+
+  function bzaruCustomCssFile(WP_REST_Request $request){
+    $filePath = get_stylesheet_directory(). '/style.css';
+    if ( ! is_writable( $filePath ) ) {
+		$msg = 'Premission not granted!';
+	}else{
+	    $msg = 'File Update Successfully!';
+	}
+    $content = file_get_contents($filePath);
+	$json = array('css'=>$content,'msg'=>$msg);
+	$response = new WP_REST_Response($json);
+    $response->set_status(200);
+    return $response;
+ } 
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'bz/v3', 'updateCustomFile', array(
+			'methods' => 'POST',
+			'callback' => 'updatebzaruCustomCssFile'
+		) );
+  } );
+
+  function updatebzaruCustomCssFile(WP_REST_Request $request){
+    $filePath = get_stylesheet_directory(). '/style.css';
+    $content = wp_unslash($request['css']);
+    if ( ! is_writable( $filePath ) ) {
+		$msg = 'Premission not granted!';
+	}else{
+	    $msg = 'File Update Successfully!';
+	}
+    $f = fopen( $filePath, "w+"); 
+    $write = fwrite( $f,$content); 
+    fclose( $f );
+    $content = file_get_contents($filePath);
+	$json = array('css'=>$content,'msg'=>$msg);
+	$response = new WP_REST_Response($json);
+    $response->set_status(200);
+    return $response;
+ }
   
 
 ?>
