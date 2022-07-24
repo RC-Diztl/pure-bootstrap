@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<td align="center" valign="top">
 						<div id="template_header_image">
 							<?php
-							$mypost = get_page_by_path('postfromfile', '', 'post');
+							$mypost = get_page_by_path('post-from-file', '', 'post');
 							if(empty($mypost)){
 							    $mypost = get_page_by_path('setting', '', 'post');
 							}
