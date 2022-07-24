@@ -38,6 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 							    $mypost = get_page_by_path('setting', '', 'post');
 							}
 							$logo_src = get_field( 'logo_link', $mypost->ID );
+							$bg_color = get_field( 'email_background_color', $mypost->ID );
 							if ( $img = get_option( 'woocommerce_email_header_image' ) ) {
 								echo '<p style="margin-top:0;"><img src="' . esc_url( $img ) . '" alt="' . get_bloginfo( 'name', 'display' ) . '" /></p>';
 							}
@@ -50,7 +51,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<table border="0" cellpadding="0" cellspacing="0" width="100%" id="template_header">
 									    <?php if(!empty($logo_src)){ ?>
     									    <tr>
-    											<td id="header_wrapper">
+    											<td id="header_wrapper" style="background-color: <?php echo $bg_color; ?>">
     												<img src="<?php echo $logo_src; ?>" widht="220">
     											</td>
     											
